@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import React from "react";
 
 export type TodoItem = {
@@ -9,11 +10,9 @@ export type TodoItem = {
   completedAt: Date | null;
 };
 
-const timeStamp = new Date().getTime().toString();
-
 const todoData: TodoItem[] = [
   {
-    id: timeStamp,
+    id: uuidv4(),
     taskName: "掃除をする",
     priority: 1,
     deadline: new Date("2020-07-23"),
@@ -21,7 +20,7 @@ const todoData: TodoItem[] = [
     completedAt: null,
   },
   {
-    id: timeStamp,
+    id: uuidv4(),
     taskName: "植物に水を上げる",
     priority: 2,
     deadline: new Date("2020-07-30"),
@@ -29,7 +28,7 @@ const todoData: TodoItem[] = [
     completedAt: null,
   },
   {
-    id: timeStamp,
+    id: uuidv4(),
     taskName: "買い物をする",
     priority: null,
     deadline: null,
@@ -37,7 +36,7 @@ const todoData: TodoItem[] = [
     completedAt: new Date("2020-07-10"),
   },
   {
-    id: timeStamp,
+    id: uuidv4(),
     taskName: "犬の散歩をする",
     priority: null,
     deadline: null,
@@ -74,12 +73,12 @@ function TodoTable() {
         </thead>
         <tbody>
           {todoData.map((item, i) => {
-            if (item.priority !== null && item.deadline !== null) {
+            if (!item.completed) {
               return (
                 <tr key={i}>
                   <td>{item.taskName}</td>
                   <td>{getPriorityLabel(item.priority!)}</td>
-                  <td>{item.deadline.toISOString().slice(0, 10)}</td>
+                  <td>{item.deadline!.toISOString().slice(0, 10)}</td>
                   <td>
                     <button>編集</button>
                   </td>
