@@ -101,4 +101,43 @@ function TodoTable() {
   );
 }
 
-export default TodoTable;
+function DoneTable() {
+  return (
+    <div>
+      <h2>Done</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>タスク</th>
+            <th>完了日</th>
+          </tr>
+        </thead>
+        <tbody>
+          {todoData.map((item, i) => {
+            if (item.completed) {
+              return (
+                <tr key={i}>
+                  <td>{item.taskName}</td>
+                  <td>{item.completedAt!.toISOString().slice(0, 10)}</td>
+                </tr>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Table() {
+  return (
+    <div>
+      <TodoTable />
+      <DoneTable />
+    </div>
+  );
+}
+
+export default Table;
