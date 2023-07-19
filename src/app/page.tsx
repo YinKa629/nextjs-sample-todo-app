@@ -1,95 +1,104 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import React from "react";
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+export type TodoItem = {
+  id: string;
+  taskName: string;
+  priority: number | null;
+  deadline: Date | null;
+  completed: boolean;
+  completedAt: Date | null;
+};
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+const timeStamp = new Date().getTime().toString();
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+const todoData: TodoItem[] = [
+  {
+    id: timeStamp,
+    taskName: "掃除をする",
+    priority: 1,
+    deadline: new Date("2020-07-23"),
+    completed: false,
+    completedAt: null,
+  },
+  {
+    id: timeStamp,
+    taskName: "植物に水を上げる",
+    priority: 2,
+    deadline: new Date("2020-07-30"),
+    completed: false,
+    completedAt: null,
+  },
+  {
+    id: timeStamp,
+    taskName: "買い物をする",
+    priority: null,
+    deadline: null,
+    completed: true,
+    completedAt: new Date("2020-07-10"),
+  },
+  {
+    id: timeStamp,
+    taskName: "犬の散歩をする",
+    priority: null,
+    deadline: null,
+    completed: true,
+    completedAt: new Date("2020-06-29"),
+  },
+];
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+function getPriorityLabel(priority: number) {
+  switch (priority) {
+    case 1:
+      return "高";
+    case 2:
+      return "中";
+    case 3:
+      return "低";
+  }
 }
+
+function TodoTable() {
+  return (
+    <div>
+      <h2>Todo List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>タスク</th>
+            <th>優先度</th>
+            <th>期限</th>
+            <th></th>
+            <th></th>
+            <th>完了</th>
+          </tr>
+        </thead>
+        <tbody>
+          {todoData.map((item, i) => {
+            if (item.priority !== null && item.deadline !== null) {
+              return (
+                <tr key={i}>
+                  <td>{item.taskName}</td>
+                  <td>{getPriorityLabel(item.priority!)}</td>
+                  <td>{item.deadline.toISOString().slice(0, 10)}</td>
+                  <td>
+                    <button>編集</button>
+                  </td>
+                  <td>
+                    <button>削除</button>
+                  </td>
+                  <td>
+                    <input type="checkbox" />
+                  </td>
+                </tr>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default TodoTable;
