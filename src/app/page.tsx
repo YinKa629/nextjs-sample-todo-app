@@ -1,4 +1,4 @@
-" use client";
+"use client";
 
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
@@ -62,23 +62,54 @@ function getPriorityLabel(priority: number) {
 
 function TodoTable() {
   // 修正点：第一引数はtodoData、第二引数はtodoDate全体を書き換える関数、useStateの引数にはtodoDateを入れる
-  const [todoItems, setTodoItems] = useState(todoData);
-  const [task, setTask] = useState("");
+  const [todoItems, setTodoItems] = useState<TodoItem[]>(todoData);
+  const [task, setTask] = useState<string>("");
+
+  const changeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTask(e.target.value);
+  };
 
   const addTodoItems = () => {
+    // e.preventDefault(); 必要かどうか不明
+    if (task === "") return;
+
     setTodoItems((todoItems) => [
       ...todoItems,
       { id: uuidv4(), taskName: task, completed: false },
     ]);
+
     setTask("");
   };
 
   return (
     <div>
       <h2>Todo List</h2>
-      {/* <form onSubmit={addTodoItems}>
-        <input value={task} placeholder="入力欄" />
-      </form> */}
+      <table>
+        <thead>
+          <tr>
+            <td>タスク名</td>
+            <td>期限</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input
+                type="text"
+                value={task}
+                onChange={changeTask}
+                placeholder="入力欄"
+              />
+            </td>
+            <td>
+              <input type="text"></input>
+            </td>
+            <td>
+              <button onClick={addTodoItems}>新規追加</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <table>
         <thead>
           <tr>
