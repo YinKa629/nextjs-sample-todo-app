@@ -71,7 +71,7 @@ function TodoTable() {
 
   const addTodoItems = () => {
     // e.preventDefault(); 必要かどうか不明
-    if (task === "") return;
+    if (!task.trim()) return;
 
     setTodoItems((todoItems) => [
       ...todoItems,
@@ -128,7 +128,12 @@ function TodoTable() {
                 // 修正点：Keyはmapの要素ではなく、item.idを用いる
                 <tr key={item.id}>
                   <td>{item.taskName}</td>
-                  <td>{getPriorityLabel(item.priority!)}</td>
+                  {/* 修正点：item.priorityがundefinedかチェックした上でgetPriorityLabelを呼び出す */}
+                  <td>
+                    {item.priority !== undefined
+                      ? getPriorityLabel(item.priority)
+                      : "-"}
+                  </td>
                   <td>{item.deadline?.toISOString().slice(0, 10) ?? "-"}</td>
                   <td>
                     <button>編集</button>
