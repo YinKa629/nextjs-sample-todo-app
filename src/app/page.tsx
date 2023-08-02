@@ -2,6 +2,7 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
+import TodoList from "./components/TodoList";
 
 export type TodoItem = {
   id: string;
@@ -20,8 +21,6 @@ const todoData: TodoItem[] = [
     priority: 1,
     deadline: new Date("2020-07-23"),
     completed: false,
-    // 修正点：TSではundefinedに統一
-    completedAt: undefined,
   },
   {
     id: uuidv4(),
@@ -29,40 +28,30 @@ const todoData: TodoItem[] = [
     priority: 2,
     deadline: new Date("2020-07-30"),
     completed: false,
-    completedAt: undefined,
   },
   {
     id: uuidv4(),
     taskName: "買い物をする",
-    priority: undefined,
-    deadline: undefined,
+    priority: 2,
+    deadline: new Date("2019-07-30"),
     completed: true,
     completedAt: new Date("2020-07-10"),
   },
   {
     id: uuidv4(),
     taskName: "犬の散歩をする",
-    priority: undefined,
-    deadline: undefined,
+    priority: 2,
+    deadline: new Date("2018-07-30"),
     completed: true,
     completedAt: new Date("2020-06-29"),
   },
 ];
 
-function getPriorityLabel(priority: number) {
-  switch (priority) {
-    case 1:
-      return "高";
-    case 2:
-      return "中";
-    case 3:
-      return "低";
-  }
-}
-
 function TodoTable() {
+  const incompleteItems = todoData.filter((item) => !item.completed);
+
   // 修正点：第一引数はtodoData、第二引数はtodoDate全体を書き換える関数、useStateの引数にはtodoDateを入れる
-  const [todoItems, setTodoItems] = useState<TodoItem[]>(todoData);
+  const [todoItems, setTodoItems] = useState<TodoItem[]>(incompleteItems);
   const [task, setTask] = useState<string>("");
 
   const changeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,34 +111,9 @@ function TodoTable() {
           </tr>
         </thead>
         <tbody>
-          {todoItems.map((item) => {
-            if (!item.completed) {
-              return (
-                // 修正点：Keyはmapの要素ではなく、item.idを用いる
-                <tr key={item.id}>
-                  <td>{item.taskName}</td>
-                  {/* 修正点：item.priorityがundefinedかチェックした上でgetPriorityLabelを呼び出す */}
-                  <td>
-                    {item.priority !== undefined
-                      ? getPriorityLabel(item.priority)
-                      : "-"}
-                  </td>
-                  <td>{item.deadline?.toISOString().slice(0, 10) ?? "-"}</td>
-                  <td>
-                    <button>編集</button>
-                  </td>
-                  <td>
-                    <button>削除</button>
-                  </td>
-                  <td>
-                    <input type="checkbox" />
-                  </td>
-                </tr>
-              );
-            } else {
-              return undefined;
-            }
-          })}
+          {todoItems.map((item) => (
+            <TodoList key={item.id} item={item} />
+          ))}
         </tbody>
       </table>
     </div>
@@ -157,6 +121,7 @@ function TodoTable() {
 }
 
 function DoneTable() {
+  const doneItems = todoData.filter((item) => item.completed);
   return (
     <div>
       <h2>Done</h2>
@@ -164,22 +129,17 @@ function DoneTable() {
         <thead>
           <tr>
             <th>タスク</th>
+            <th>優先度</th>
+            <th>期限</th>
+            <th></th>
+            <th></th>
             <th>完了日</th>
           </tr>
         </thead>
         <tbody>
-          {todoData.map((item) => {
-            if (item.completed) {
-              return (
-                <tr key={item.id}>
-                  <td>{item.taskName}</td>
-                  <td>{item.completedAt?.toISOString().slice(0, 10) ?? "-"}</td>
-                </tr>
-              );
-            } else {
-              return undefined;
-            }
-          })}
+          {doneItems.map((item) => (
+            <TodoList key={item.id} item={item} />
+          ))}
         </tbody>
       </table>
     </div>
