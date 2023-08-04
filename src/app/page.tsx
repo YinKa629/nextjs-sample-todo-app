@@ -2,7 +2,8 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
-import TodoList from "./components/TodoList";
+// 修正点：default exportからnamed exportへ変更、{}でモジュール名を指定
+import { TodoListItem } from "./components/TodoListItem";
 
 export type TodoItem = {
   id: string;
@@ -13,6 +14,11 @@ export type TodoItem = {
   completed: boolean;
   completedAt?: Date;
 };
+
+// 修正点：Reactコンポーネントに渡す型をPropsでまとめる
+interface TodoItemProps {
+  todoItem: TodoItem[];
+}
 
 const todoData: TodoItem[] = [
   {
@@ -47,8 +53,9 @@ const todoData: TodoItem[] = [
   },
 ];
 
-function TodoTable() {
-  const incompleteItems = todoData.filter((item) => !item.completed);
+// 修正点：todoDataをTableコンポーネントから渡すように変える
+const TodoTable: React.FC<TodoItemProps> = ({ todoItem }) => {
+  const incompleteItems = todoItem.filter((todoItem) => !todoItem.completed);
 
   // 修正点：第一引数はtodoData、第二引数はtodoDate全体を書き換える関数、useStateの引数にはtodoDateを入れる
   const [todoItems, setTodoItems] = useState<TodoItem[]>(incompleteItems);
@@ -112,15 +119,15 @@ function TodoTable() {
         </thead>
         <tbody>
           {todoItems.map((item) => (
-            <TodoList key={item.id} item={item} />
+            <TodoListItem key={item.id} item={item} />
           ))}
         </tbody>
       </table>
     </div>
   );
-}
+};
 
-function DoneTable() {
+const DoneTable: React.FC = () => {
   const doneItems = todoData.filter((item) => item.completed);
   return (
     <div>
@@ -138,21 +145,22 @@ function DoneTable() {
         </thead>
         <tbody>
           {doneItems.map((item) => (
-            <TodoList key={item.id} item={item} />
+            <TodoListItem key={item.id} item={item} />
           ))}
         </tbody>
       </table>
     </div>
   );
-}
+};
 
-function Table() {
+// 質問：下記の親コンポーネントもReactコンポーネント化(React.FC継承)すべきかどうか
+const Table: React.FC = () => {
   return (
     <div>
-      <TodoTable />
+      <TodoTable todoItem={todoData} />
       <DoneTable />
     </div>
   );
-}
+};
 
 export default Table;
