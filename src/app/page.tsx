@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 // 修正点：default exportからnamed exportへ変更、{}でモジュール名を指定
 import { TodoListItem } from "./components/TodoListItem";
+import React from "react";
+import { NewTodoItem } from "./components/NewTodoItem";
 
 export type TodoItem = {
   id: string;
@@ -15,9 +17,10 @@ export type TodoItem = {
   completedAt?: Date;
 };
 
-// 修正点：Reactコンポーネントに渡す型をPropsでまとめる
-interface TodoItemProps {
-  todoItem: TodoItem[];
+// 修正点：Reactコンポーネントに渡す型をPropsでまとめる（質問：Propsでまとめるべきなのか）
+interface TodoTableProps {
+  items: TodoItem[];
+  editable: boolean;
 }
 
 const todoData: TodoItem[] = [
@@ -54,58 +57,23 @@ const todoData: TodoItem[] = [
 ];
 
 // 修正点：todoDataをTableコンポーネントから渡すように変える
-const TodoTable: React.FC<TodoItemProps> = ({ todoItem }) => {
-  const incompleteItems = todoItem.filter((todoItem) => !todoItem.completed);
-
+export const TodoTable: React.FC<TodoTableProps> = ({ items, editable }) => {
   // 修正点：第一引数はtodoData、第二引数はtodoDate全体を書き換える関数、useStateの引数にはtodoDateを入れる
-  const [todoItems, setTodoItems] = useState<TodoItem[]>(incompleteItems);
-  const [task, setTask] = useState<string>("");
+  const [todoItems, setTodoItems] = useState<TodoItem[]>(items);
 
-  const changeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTask(e.target.value);
-  };
-
-  const addTodoItems = () => {
-    // e.preventDefault(); 必要かどうか不明
+  const addTodoItems = (task: string) => {
     if (!task.trim()) return;
 
     setTodoItems((todoItems) => [
       ...todoItems,
       { id: uuidv4(), taskName: task, completed: false },
     ]);
-
-    setTask("");
   };
 
   return (
     <div>
       <h2>Todo List</h2>
-      <table>
-        <thead>
-          <tr>
-            <td>タスク名</td>
-            <td>期限</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input
-                type="text"
-                value={task}
-                onChange={changeTask}
-                placeholder="入力欄"
-              />
-            </td>
-            <td>
-              <input type="text"></input>
-            </td>
-            <td>
-              <button onClick={addTodoItems}>新規追加</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <NewTodoItem onAddTodo={addTodoItems} />
       <table>
         <thead>
           <tr>
@@ -114,7 +82,7 @@ const TodoTable: React.FC<TodoItemProps> = ({ todoItem }) => {
             <th>期限</th>
             <th></th>
             <th></th>
-            <th>完了</th>
+            <th>{editable ? "完了" : "完了日"}</th>
           </tr>
         </thead>
         <tbody>
@@ -127,40 +95,17 @@ const TodoTable: React.FC<TodoItemProps> = ({ todoItem }) => {
   );
 };
 
-const DoneTable: React.FC = () => {
+const Table: React.FC = () => {
+  const incompleteItems = todoData.filter((item) => !item.completed);
   const doneItems = todoData.filter((item) => item.completed);
   return (
     <div>
-      <h2>Done</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>タスク</th>
-            <th>優先度</th>
-            <th>期限</th>
-            <th></th>
-            <th></th>
-            <th>完了日</th>
-          </tr>
-        </thead>
-        <tbody>
-          {doneItems.map((item) => (
-            <TodoListItem key={item.id} item={item} />
-          ))}
-        </tbody>
-      </table>
+      {/* 修正点： 2つのTableを1つのコンポーネントに集約し、ediitable変数で切り替え*/}
+      <TodoTable items={incompleteItems} editable={true} />
+      <TodoTable items={doneItems} editable={false} />
     </div>
   );
 };
 
-// 質問：下記の親コンポーネントもReactコンポーネント化(React.FC継承)すべきかどうか
-const Table: React.FC = () => {
-  return (
-    <div>
-      <TodoTable todoItem={todoData} />
-      <DoneTable />
-    </div>
-  );
-};
-
+// 質問：export const Tableやexportせずにconst Tableでは動かないのはなぜですか。
 export default Table;
