@@ -59,21 +59,21 @@ const todoData: TodoItem[] = [
 // 修正点：todoDataをTableコンポーネントから渡すように変える
 export const TodoTable: React.FC<TodoTableProps> = ({ items, editable }) => {
   // 修正点：第一引数はtodoData、第二引数はtodoDate全体を書き換える関数、useStateの引数にはtodoDateを入れる
-  const [todoItems, setTodoItems] = useState<TodoItem[]>(items);
+  // const [todoItems, setTodoItems] = useState<TodoItem[]>(items);
 
-  const addTodoItems = (task: string) => {
-    if (!task.trim()) return;
+  // const addTodoItems = (task: string) => {
+  //   if (!task.trim()) return;
 
-    setTodoItems((todoItems) => [
-      ...todoItems,
-      { id: uuidv4(), taskName: task, completed: false },
-    ]);
-  };
+  //   setTodoItems((todoItems) => [
+  //     ...todoItems,
+  //     { id: uuidv4(), taskName: task, completed: false },
+  //   ]);
+  // };
 
   return (
     <div>
       <h2>Todo List</h2>
-      <NewTodoItem onAddTodo={addTodoItems} />
+      {/* {editable && <NewTodoItem onAddTodo={addTodoItems} />} */}
       <table>
         <thead>
           <tr>
@@ -86,7 +86,7 @@ export const TodoTable: React.FC<TodoTableProps> = ({ items, editable }) => {
           </tr>
         </thead>
         <tbody>
-          {todoItems.map((item) => (
+          {items.map((item) => (
             <TodoListItem key={item.id} item={item} />
           ))}
         </tbody>
@@ -95,12 +95,25 @@ export const TodoTable: React.FC<TodoTableProps> = ({ items, editable }) => {
   );
 };
 
-const Table: React.FC = () => {
-  const incompleteItems = todoData.filter((item) => !item.completed);
-  const doneItems = todoData.filter((item) => item.completed);
+const Table: React.FC<TodoTableProps> = ({}) => {
+  const [todoItems, setTodoItems] = useState<TodoItem[]>(todoData);
+
+  const incompleteItems = todoItems.filter((todoItems) => !todoItems.completed);
+  const doneItems = todoItems.filter((todoItems) => todoItems.completed);
+
+  const addTodoItems = (task: string) => {
+    if (!task.trim()) return;
+
+    setTodoItems((todoItems) => [
+      ...todoItems,
+      { id: uuidv4(), taskName: task, completed: false },
+    ]);
+  };
+
   return (
     <div>
       {/* 修正点： 2つのTableを1つのコンポーネントに集約し、ediitable変数で切り替え*/}
+      <NewTodoItem onAddTodo={addTodoItems} />
       <TodoTable items={incompleteItems} editable={true} />
       <TodoTable items={doneItems} editable={false} />
     </div>

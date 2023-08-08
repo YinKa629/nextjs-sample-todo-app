@@ -19,7 +19,7 @@ export const NewTodoItem: React.FC<NewTodoItemProps> = ({ onAddTodo }) => {
   };
 
   return (
-    <>
+    <table>
       <thead>
         <tr>
           <td>タスク名</td>
@@ -44,6 +44,6 @@ export const NewTodoItem: React.FC<NewTodoItemProps> = ({ onAddTodo }) => {
           </td>
         </tr>
       </tbody>
-    </>
+    </table>
   );
 };
