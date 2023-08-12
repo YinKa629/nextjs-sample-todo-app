@@ -6,6 +6,8 @@ import { useState } from "react";
 import { TodoListItem } from "./components/TodoListItem";
 import React from "react";
 import { NewTodoItem } from "./components/NewTodoItem";
+import { NextPage } from "next";
+import { TodoListTable } from "./components/TodoListTable";
 
 export type TodoItem = {
   id: string;
@@ -16,12 +18,6 @@ export type TodoItem = {
   completed: boolean;
   completedAt?: Date;
 };
-
-// 修正点：Reactコンポーネントに渡す型をPropsでまとめる（質問：Propsでまとめるべきなのか）
-interface TodoTableProps {
-  items: TodoItem[];
-  editable: boolean;
-}
 
 const todoData: TodoItem[] = [
   {
@@ -56,69 +52,27 @@ const todoData: TodoItem[] = [
   },
 ];
 
-// 修正点：todoDataをTableコンポーネントから渡すように変える
-export const TodoTable: React.FC<TodoTableProps> = ({ items, editable }) => {
-  // 修正点：第一引数はtodoData、第二引数はtodoDate全体を書き換える関数、useStateの引数にはtodoDateを入れる
-  // const [todoItems, setTodoItems] = useState<TodoItem[]>(items);
-
-  // const addTodoItems = (task: string) => {
-  //   if (!task.trim()) return;
-
-  //   setTodoItems((todoItems) => [
-  //     ...todoItems,
-  //     { id: uuidv4(), taskName: task, completed: false },
-  //   ]);
-  // };
-
-  return (
-    <div>
-      <h2>Todo List</h2>
-      {/* {editable && <NewTodoItem onAddTodo={addTodoItems} />} */}
-      <table>
-        <thead>
-          <tr>
-            <th>タスク</th>
-            <th>優先度</th>
-            <th>期限</th>
-            <th></th>
-            <th></th>
-            <th>{editable ? "完了" : "完了日"}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <TodoListItem key={item.id} item={item} />
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-const Table: React.FC<TodoTableProps> = ({}) => {
+const TodoListPage: NextPage = ({}) => {
   const [todoItems, setTodoItems] = useState<TodoItem[]>(todoData);
 
   const incompleteItems = todoItems.filter((todoItems) => !todoItems.completed);
   const doneItems = todoItems.filter((todoItems) => todoItems.completed);
 
-  const addTodoItems = (task: string) => {
-    if (!task.trim()) return;
-
-    setTodoItems((todoItems) => [
-      ...todoItems,
-      { id: uuidv4(), taskName: task, completed: false },
-    ]);
+  const addTodoItems = (newTodoItem: TodoItem) => {
+    setTodoItems((todoItems) => [...todoItems, newTodoItem]);
   };
 
   return (
     <div>
-      {/* 修正点： 2つのTableを1つのコンポーネントに集約し、ediitable変数で切り替え*/}
       <NewTodoItem onAddTodo={addTodoItems} />
-      <TodoTable items={incompleteItems} editable={true} />
-      <TodoTable items={doneItems} editable={false} />
+      {/* 修正点：タイトルはTodoListTableコンポーネント外に出す */}
+      <h2>Todo List</h2>
+      {/* 修正点： 2つのTableを1つのコンポーネントに集約し、ediitable変数で切り替え*/}
+      <TodoListTable items={incompleteItems} editable={true} />
+      <h2>Done</h2>
+      <TodoListTable items={doneItems} editable={false} />
     </div>
   );
 };
 
-// 質問：export const Tableやexportせずにconst Tableでは動かないのはなぜですか。
-export default Table;
+export default TodoListPage;

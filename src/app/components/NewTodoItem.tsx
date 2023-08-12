@@ -3,7 +3,7 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 interface NewTodoItemProps {
-  onAddTodo: (task: string) => void;
+  onAddTodo: (todo: TodoItem) => void;
 }
 
 export const NewTodoItem: React.FC<NewTodoItemProps> = ({ onAddTodo }) => {
@@ -14,10 +14,18 @@ export const NewTodoItem: React.FC<NewTodoItemProps> = ({ onAddTodo }) => {
   };
 
   const handleAddTodo = () => {
-    onAddTodo(task);
+    if (!task.trim()) return;
+    // 修正点：newTodoItemをNewTodoItemコンポーネント内で生成する
+    const newTodoItem: TodoItem = {
+      id: uuidv4(),
+      taskName: task,
+      completed: false,
+    };
+    onAddTodo(newTodoItem);
     setTask("");
   };
 
+  // TODO: CSSフレックスボックスに修正する
   return (
     <table>
       <thead>

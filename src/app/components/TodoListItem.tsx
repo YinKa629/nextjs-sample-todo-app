@@ -1,7 +1,7 @@
 import { TodoItem } from "app/page";
 
 // 質問：page側で行ったProps定義と同様のものをコンポーネント側でも定義すべきなのか
-interface TodoItemProps {
+interface TodoListItemProps {
   item: TodoItem;
 }
 
@@ -20,7 +20,7 @@ function getPriorityLabel(priority?: number) {
 }
 
 // 修正点：default exportからnamed exportへ変更
-export const TodoListItem: React.FC<TodoItemProps> = ({ item }) => {
+export const TodoListItem: React.FC<TodoListItemProps> = ({ item }) => {
   return (
     // 修正点：Keyはmapの要素ではなく、item.idを用いる
     <tr key={item.id}>
