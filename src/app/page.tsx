@@ -2,6 +2,12 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
+// 修正点：default exportからnamed exportへ変更、{}でモジュール名を指定
+import { TodoListItem } from "./components/TodoListItem";
+import React from "react";
+import { NewTodoItem } from "./components/NewTodoItem";
+import { NextPage } from "next";
+import { TodoListTable } from "./components/TodoListTable";
 
 export type TodoItem = {
   id: string;
@@ -20,8 +26,6 @@ const todoData: TodoItem[] = [
     priority: 1,
     deadline: new Date("2020-07-23"),
     completed: false,
-    // 修正点：TSではundefinedに統一
-    completedAt: undefined,
   },
   {
     id: uuidv4(),
@@ -29,170 +33,46 @@ const todoData: TodoItem[] = [
     priority: 2,
     deadline: new Date("2020-07-30"),
     completed: false,
-    completedAt: undefined,
   },
   {
     id: uuidv4(),
     taskName: "買い物をする",
-    priority: undefined,
-    deadline: undefined,
+    priority: 2,
+    deadline: new Date("2019-07-30"),
     completed: true,
     completedAt: new Date("2020-07-10"),
   },
   {
     id: uuidv4(),
     taskName: "犬の散歩をする",
-    priority: undefined,
-    deadline: undefined,
+    priority: 2,
+    deadline: new Date("2018-07-30"),
     completed: true,
     completedAt: new Date("2020-06-29"),
   },
 ];
 
-function getPriorityLabel(priority: number) {
-  switch (priority) {
-    case 1:
-      return "高";
-    case 2:
-      return "中";
-    case 3:
-      return "低";
-  }
-}
-
-function TodoTable() {
-  // 修正点：第一引数はtodoData、第二引数はtodoDate全体を書き換える関数、useStateの引数にはtodoDateを入れる
+const TodoListPage: NextPage = ({}) => {
   const [todoItems, setTodoItems] = useState<TodoItem[]>(todoData);
-  const [task, setTask] = useState<string>("");
 
-  const changeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTask(e.target.value);
-  };
+  const incompleteItems = todoItems.filter((todoItems) => !todoItems.completed);
+  const doneItems = todoItems.filter((todoItems) => todoItems.completed);
 
-  const addTodoItems = () => {
-    // e.preventDefault(); 必要かどうか不明
-    if (!task.trim()) return;
-
-    setTodoItems((todoItems) => [
-      ...todoItems,
-      { id: uuidv4(), taskName: task, completed: false },
-    ]);
-
-    setTask("");
+  const addTodoItems = (newTodoItem: TodoItem) => {
+    setTodoItems((todoItems) => [...todoItems, newTodoItem]);
   };
 
   return (
     <div>
+      <NewTodoItem onAddTodo={addTodoItems} />
+      {/* 修正点：タイトルはTodoListTableコンポーネント外に出す */}
       <h2>Todo List</h2>
-      <table>
-        <thead>
-          <tr>
-            <td>タスク名</td>
-            <td>期限</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input
-                type="text"
-                value={task}
-                onChange={changeTask}
-                placeholder="入力欄"
-              />
-            </td>
-            <td>
-              <input type="text"></input>
-            </td>
-            <td>
-              <button onClick={addTodoItems}>新規追加</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <table>
-        <thead>
-          <tr>
-            <th>タスク</th>
-            <th>優先度</th>
-            <th>期限</th>
-            <th></th>
-            <th></th>
-            <th>完了</th>
-          </tr>
-        </thead>
-        <tbody>
-          {todoItems.map((item) => {
-            if (!item.completed) {
-              return (
-                // 修正点：Keyはmapの要素ではなく、item.idを用いる
-                <tr key={item.id}>
-                  <td>{item.taskName}</td>
-                  {/* 修正点：item.priorityがundefinedかチェックした上でgetPriorityLabelを呼び出す */}
-                  <td>
-                    {item.priority !== undefined
-                      ? getPriorityLabel(item.priority)
-                      : "-"}
-                  </td>
-                  <td>{item.deadline?.toISOString().slice(0, 10) ?? "-"}</td>
-                  <td>
-                    <button>編集</button>
-                  </td>
-                  <td>
-                    <button>削除</button>
-                  </td>
-                  <td>
-                    <input type="checkbox" />
-                  </td>
-                </tr>
-              );
-            } else {
-              return undefined;
-            }
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function DoneTable() {
-  return (
-    <div>
+      {/* 修正点： 2つのTableを1つのコンポーネントに集約し、ediitable変数で切り替え*/}
+      <TodoListTable items={incompleteItems} editable={true} />
       <h2>Done</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>タスク</th>
-            <th>完了日</th>
-          </tr>
-        </thead>
-        <tbody>
-          {todoData.map((item) => {
-            if (item.completed) {
-              return (
-                <tr key={item.id}>
-                  <td>{item.taskName}</td>
-                  <td>{item.completedAt?.toISOString().slice(0, 10) ?? "-"}</td>
-                </tr>
-              );
-            } else {
-              return undefined;
-            }
-          })}
-        </tbody>
-      </table>
+      <TodoListTable items={doneItems} editable={false} />
     </div>
   );
-}
+};
 
-function Table() {
-  return (
-    <div>
-      <TodoTable />
-      <DoneTable />
-    </div>
-  );
-}
-
-export default Table;
+export default TodoListPage;
