@@ -53,13 +53,27 @@ const todoData: TodoItem[] = [
 ];
 
 const TodoListPage: NextPage = ({}) => {
-  // const [todoItems, setTodoItems] = useState<TodoItem[]>(todoData);
   const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
 
   useEffect(() => {
     fetch("/api/items")
       .then((res) => res.json())
-      .then((data) => setTodoItems(data))
+      .then((data) => {
+        // 修正点：string型で受け取ったデータをTodoItemに合わせてDate型に変換する
+        const convertedDate: TodoItem[] = data.map((item: any) => {
+          return {
+            id: item.id,
+            taskName: item.taskName,
+            priority: item.priority,
+            deadline: item.deadline ? new Date(item.deadline) : undefined,
+            completed: item.completedAt,
+            completedAt: item.completedAt
+              ? new Date(item.completedAt)
+              : undefined,
+          };
+        });
+        setTodoItems(convertedDate);
+      })
       .catch((error) => console.error("API call error:", error));
   }, []);
 

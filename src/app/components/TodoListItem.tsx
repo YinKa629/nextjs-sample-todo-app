@@ -27,18 +27,14 @@ export const TodoListItem: React.FC<TodoListItemProps> = ({ item }) => {
       <td>{item.taskName}</td>
       {/* 修正点：item.priorityがundefinedかチェックした上でgetPriorityLabelを呼び出す */}
       <td>{getPriorityLabel(item.priority)}</td>
-      <td>
-        {item.deadline
-          ? new Date(item.deadline).toISOString().slice(0, 10)
-          : "-"}
-      </td>
+      <td>{item.deadline ? item.deadline.toISOString().slice(0, 10) : "-"}</td>
       <td>{!item.completed ? <button>編集</button> : ""}</td>
       <td>{!item.completed ? <button>削除</button> : ""}</td>
       <td>
         {!item.completed ? (
           <input type="checkbox" />
         ) : item.completedAt ? (
-          new Date(item.completedAt).toISOString().slice(0, 10)
+          item.completedAt.toISOString().slice(0, 10)
         ) : (
           "-"
         )}

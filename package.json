@@ -18,6 +18,7 @@
     "eslint-config-next": "13.4.9",
     "next": "13.4.9",
     "react": "18.2.0",
+    "react-datepicker": "^4.16.0",
     "react-dom": "18.2.0",
     "typescript": "5.1.6"
   },
@@ -29,6 +30,7 @@
     "@storybook/nextjs": "^7.0.26",
     "@storybook/react": "^7.0.26",
     "@storybook/testing-library": "^0.0.14-next.2",
+    "@types/react-datepicker": "^4.15.0",
     "@types/uuid": "^9.0.2",
     "eslint-plugin-storybook": "^0.6.12",
     "storybook": "^7.0.26"
