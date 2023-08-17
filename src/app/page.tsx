@@ -55,8 +55,10 @@ const todoData: TodoItem[] = [
 const TodoListPage: NextPage = ({}) => {
   const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
 
+  const [sort, setSort] = useState('asc'); // 'desc'
+  
   useEffect(() => {
-    fetch("/api/items")
+    fetch(`/api/items?sort=${sort}`)
       .then((res) => res.json())
       .then((data) => {
         // 修正点：string型で受け取ったデータをTodoItemに合わせてDate型に変換する
@@ -75,7 +77,7 @@ const TodoListPage: NextPage = ({}) => {
         setTodoItems(convertedDate);
       })
       .catch((error) => console.error("API call error:", error));
-  }, []);
+  }, [sort]);
 
   const incompleteItems = todoItems.filter((todoItems) => !todoItems.completed);
   const doneItems = todoItems.filter((todoItems) => todoItems.completed);
