@@ -1,7 +1,7 @@
 "use client";
 
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // 修正点：default exportからnamed exportへ変更、{}でモジュール名を指定
 import { TodoListItem } from "./components/TodoListItem";
 import React from "react";
@@ -53,7 +53,29 @@ const todoData: TodoItem[] = [
 ];
 
 const TodoListPage: NextPage = ({}) => {
-  const [todoItems, setTodoItems] = useState<TodoItem[]>(todoData);
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+
+  useEffect(() => {
+    fetch("/api/items")
+      .then((res) => res.json())
+      .then((data) => {
+        // 修正点：string型で受け取ったデータをTodoItemに合わせてDate型に変換する
+        const convertedDate: TodoItem[] = data.map((item: any) => {
+          return {
+            id: item.id,
+            taskName: item.taskName,
+            priority: item.priority,
+            deadline: item.deadline ? new Date(item.deadline) : undefined,
+            completed: item.completedAt,
+            completedAt: item.completedAt
+              ? new Date(item.completedAt)
+              : undefined,
+          };
+        });
+        setTodoItems(convertedDate);
+      })
+      .catch((error) => console.error("API call error:", error));
+  }, []);
 
   const incompleteItems = todoItems.filter((todoItems) => !todoItems.completed);
   const doneItems = todoItems.filter((todoItems) => todoItems.completed);

@@ -1,6 +1,8 @@
 import { TodoItem } from "app/page";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface NewTodoItemProps {
   onAddTodo: (todo: TodoItem) => void;
@@ -9,8 +11,16 @@ interface NewTodoItemProps {
 export const NewTodoItem: React.FC<NewTodoItemProps> = ({ onAddTodo }) => {
   const [task, setTask] = useState<string>("");
 
+  const Today = new Date();
+  const [deadline, setDeadline] = useState(Today);
+
   const changeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value);
+  };
+
+  const changeDeadline = (selectedDate: Date) => {
+    const newDeadline = new Date(selectedDate);
+    setDeadline(newDeadline);
   };
 
   const handleAddTodo = () => {
@@ -19,10 +29,12 @@ export const NewTodoItem: React.FC<NewTodoItemProps> = ({ onAddTodo }) => {
     const newTodoItem: TodoItem = {
       id: uuidv4(),
       taskName: task,
+      deadline: deadline,
       completed: false,
     };
     onAddTodo(newTodoItem);
     setTask("");
+    setDeadline(Today);
   };
 
   // TODO: CSSフレックスボックスに修正する
@@ -44,8 +56,13 @@ export const NewTodoItem: React.FC<NewTodoItemProps> = ({ onAddTodo }) => {
               placeholder="入力欄"
             />
           </td>
+          {/* // 修正点：react-datepickerを用いてカレンダー形式で期限を設定できるようにする。初期値は当日。 */}
           <td>
-            <input type="text" />
+            <DatePicker
+              selected={deadline}
+              onChange={changeDeadline}
+              dateFormat="yyyy/MM/dd"
+            />
           </td>
           <td>
             <button onClick={handleAddTodo}>新規追加</button>
