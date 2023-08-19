@@ -53,7 +53,19 @@ const todoData: TodoItem[] = [
 ];
 
 const TodoListPage: NextPage = ({}) => {
-  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([{
+    id: uuidv4(),
+    taskName: "サーバでレンダリング（完了）",
+    priority: 1,
+    deadline: new Date("2020-07-23"),
+    completed: true,
+  }, {
+    id: uuidv4(),
+    taskName: "サーバでレンダリング（未完）",
+    priority: 1,
+    deadline: new Date("2020-07-23"),
+    completed: false,
+  }]);
 
   useEffect(() => {
     fetch("/api/items")
@@ -83,6 +95,8 @@ const TodoListPage: NextPage = ({}) => {
   const addTodoItems = (newTodoItem: TodoItem) => {
     setTodoItems((todoItems) => [...todoItems, newTodoItem]);
   };
+
+  console.log(todoItems.length);
 
   return (
     <div>
