@@ -1,4 +1,4 @@
-import { TodoItem } from "app/page";
+import { TodoItem } from "app/todo/page";
 import { NextResponse } from "next/server";
 
 // Initial Todo Items

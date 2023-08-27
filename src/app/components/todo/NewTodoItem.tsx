@@ -1,4 +1,4 @@
-import { TodoItem } from "app/page";
+import { TodoItem } from "app/todo/page";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import DatePicker from "react-datepicker";
