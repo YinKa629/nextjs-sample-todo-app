@@ -1,4 +1,4 @@
-export const WeatherCds = [
+export const WeatherCodes = [
   { id: "100", value: "晴" },
   { id: "101", value: "晴時々曇" },
   { id: "110", value: "晴後時々曇" },

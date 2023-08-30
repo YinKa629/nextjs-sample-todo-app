@@ -1,12 +1,12 @@
 "use client";
 
-import { ForecastAll } from "app/weather/page";
-import { WeatherCds } from "./WeatherCd";
+import { NationalWeatherForecast } from "app/weather/page";
+import { WeatherCodes } from "./WeatherCodes";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  forecasts: ForecastAll[];
+  forecasts: NationalWeatherForecast[];
 };
 
 const Link = styled.div`
@@ -39,7 +39,7 @@ export const WeatherView: React.FC<Props> = ({ forecasts }) => {
         </tr>
       </thead>
       <tbody>
-        {forecasts.map((item: ForecastAll) => (
+        {forecasts.map((item: NationalWeatherForecast) => (
           <tr className="body" key={item.id}>
             <td>
               <Link
@@ -52,7 +52,7 @@ export const WeatherView: React.FC<Props> = ({ forecasts }) => {
             <td>{item.name}</td>
             {item.srf.weather.map((weather: string) => (
               // eslint-disable-next-line react/jsx-key
-              <td>{WeatherCds.find((codes) => codes.id === weather)?.value}</td>
+              <td>{WeatherCodes.find((code) => code.id === weather)?.value}</td>
             ))}
           </tr>
         ))}

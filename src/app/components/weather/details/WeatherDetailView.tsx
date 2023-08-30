@@ -1,14 +1,13 @@
 "use client";
-import { Area, ForecastDetail } from "app/weather/details/page";
-import { useEffect, useState } from "react";
-import { WeatherCds } from "../WeatherCd";
+import { RegionalWeatherForecast } from "app/weather/details/page";
+import { WeatherCodes } from "../WeatherCodes";
 
 type Props = {
-  forecast: ForecastDetail;
+  forecast: RegionalWeatherForecast;
 };
 
 export const WeatherDetailView: React.FC<Props> = ({ forecast }) => {
-  const areas = forecast.areas;
+  const weathers = forecast.weathers;
 
   return (
     <table>
@@ -26,7 +25,7 @@ export const WeatherDetailView: React.FC<Props> = ({ forecast }) => {
         </tr>
       </thead>
       <tbody>
-        {areas.map((item) => (
+        {weathers.map((item) => (
           // eslint-disable-next-line react/jsx-key
           <tr className="body">
             <td>{item.area.code}</td>
@@ -34,7 +33,7 @@ export const WeatherDetailView: React.FC<Props> = ({ forecast }) => {
             {item.weatherCodes.map((weatherCode: string) => (
               // eslint-disable-next-line react/jsx-key
               <td>
-                {WeatherCds.find((codes) => codes.id === weatherCode)?.value}
+                {WeatherCodes.find((code) => code.id === weatherCode)?.value}
               </td>
             ))}
           </tr>
