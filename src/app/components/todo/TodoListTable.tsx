@@ -1,4 +1,4 @@
-import { TodoItem } from "app/page";
+import { TodoItem } from "app/todo/page";
 import { TodoListItem } from "./TodoListItem";
 
 // 修正点：Reactコンポーネントに渡す型をPropsでまとめる（質問：Propsでまとめるべきなのか）

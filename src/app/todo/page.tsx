@@ -3,11 +3,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 // 修正点：default exportからnamed exportへ変更、{}でモジュール名を指定
-import { TodoListItem } from "./components/TodoListItem";
+import { TodoListItem } from "../components/TodoListItem";
 import React from "react";
-import { NewTodoItem } from "./components/NewTodoItem";
+import { NewTodoItem } from "../components/NewTodoItem";
 import { NextPage } from "next";
-import { TodoListTable } from "./components/TodoListTable";
+import { TodoListTable } from "../components/TodoListTable";
 
 export type TodoItem = {
   id: string;
