@@ -2,27 +2,13 @@
 
 import { NationalWeatherForecast } from "app/weather/page";
 import { WeatherCodes } from "./WeatherCodes";
-import styled from "styled-components";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Props = {
   forecasts: NationalWeatherForecast[];
 };
 
-const Link = styled.div`
-  display: inline-block;
-  margin-top: 10px;
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: underline;
-`;
-
 export const WeatherView: React.FC<Props> = ({ forecasts }) => {
-  const router = useRouter();
-  const handleLinkClick = (code: string) => {
-    router.push(`/weather/details?officeCode=${code}`);
-  };
-
   return (
     <table>
       <thead>
@@ -32,9 +18,8 @@ export const WeatherView: React.FC<Props> = ({ forecasts }) => {
           <th colSpan={3}>天気</th>
         </tr>
         <tr className="header2">
-          {forecasts[0].srf.times.map((time: string) => (
-            // eslint-disable-next-line react/jsx-key
-            <th>{time.slice(0, 10)}</th>
+          {forecasts[0].srf.times.map((time: string, index: number) => (
+            <th key={index}>{time.slice(0, 10)}</th>
           ))}
         </tr>
       </thead>
@@ -43,16 +28,17 @@ export const WeatherView: React.FC<Props> = ({ forecasts }) => {
           <tr className="body" key={item.id}>
             <td>
               <Link
-                className="link"
-                onClick={() => handleLinkClick(item.officeCode)}
+                style={{ color: "blue" }}
+                href={`/weather/details?officeCode=${item.officeCode}`}
               >
                 {item.officeCode}
               </Link>
             </td>
             <td>{item.name}</td>
-            {item.srf.weather.map((weather: string) => (
-              // eslint-disable-next-line react/jsx-key
-              <td>{WeatherCodes.find((code) => code.id === weather)?.value}</td>
+            {item.srf.weather.map((weather: string, index: number) => (
+              <td key={index}>
+                {WeatherCodes.find((code) => code.id === weather)?.value}
+              </td>
             ))}
           </tr>
         ))}

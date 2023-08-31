@@ -18,21 +18,20 @@ export const WeatherDetailView: React.FC<Props> = ({ forecast }) => {
           <th colSpan={3}>天気</th>
         </tr>
         <tr className="header2">
-          {forecast.timeDefines.map((time: string) => (
+          {forecast.timeDefines.map((time: string, index: number) => (
             // eslint-disable-next-line react/jsx-key
-            <th>{time.slice(0, 10)}</th>
+            <th key={index}>{time.slice(0, 10)}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {weathers.map((item) => (
+        {weathers.map((item, index: number) => (
           // eslint-disable-next-line react/jsx-key
-          <tr className="body">
+          <tr className="body" key={index}>
             <td>{item.area.code}</td>
             <td>{item.area.name}</td>
-            {item.weatherCodes.map((weatherCode: string) => (
-              // eslint-disable-next-line react/jsx-key
-              <td>
+            {item.weatherCodes.map((weatherCode: string, index: number) => (
+              <td key={index}>
                 {WeatherCodes.find((code) => code.id === weatherCode)?.value}
               </td>
             ))}
