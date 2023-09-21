@@ -20,6 +20,7 @@ const ErrorMessage = styled.div`
 const LoginPage: NextPage = ({}) => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoginFailed, setLoginFailed] = useState<boolean>(false);
 
   const {
     handleSubmit,
@@ -42,12 +43,21 @@ const LoginPage: NextPage = ({}) => {
     const result = await signIn("credentials", {
       userName: data.userName,
       password: data.password,
+      callbackUrl: "/todo",
     });
+    console.log(result);
+
+    if (result?.error) {
+      console.error("ログインエラー:", result.error);
+      setLoginFailed(true);
+    }
   };
 
   return (
     <>
       <h1>ログインページ</h1>
+      {isLoginFailed && <ErrorMessage>認証に失敗しました</ErrorMessage>}
+
       <div>
         <label>ユーザー名</label>
         <input
@@ -60,13 +70,13 @@ const LoginPage: NextPage = ({}) => {
           onChange={handleChangeUserName}
         />
         {errors.userName && (
-          <ErrorMessage>{errors.password?.message}</ErrorMessage>
+          <ErrorMessage>{errors.userName?.message}</ErrorMessage>
         )}
 
         <label htmlFor="password">パスワード</label>
         <input
           id="password"
-          type="text"
+          type="password"
           value={password}
           {...register("password", {
             required: { value: true, message: "パスワードは必須です" },

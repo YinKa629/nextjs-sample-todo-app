@@ -34,12 +34,15 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  pages: {
+    signIn: "/auth",
+  },
+
   callbacks: {
     jwt({ token, user }) {
       if (user) {
         token.id = user.id;
       }
-      console.log(token.id);
       return token;
     },
   },
