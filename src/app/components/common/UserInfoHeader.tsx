@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import styled from "styled-components";
+import { useLayoutEffect, useState } from "react";
+import { UserInfoItem } from "app/api/userInfo/route";
 
 const UserInfoContainer = styled.div`
   background-color: #ffd000ed; /* ヘッダーの背景色を設定 */
@@ -20,22 +22,35 @@ const UserInfo = styled.div`
 
 export const UserInfoHeader: React.FC = () => {
   const router = useRouter();
-  const { data } = useSession();
+  const { data: session } = useSession();
+  const [userInfo, setUserInfo] = useState<UserInfoItem>();
+
+  useLayoutEffect(() => {
+    if (session && session.user) {
+      const userName = session.user.name;
+      fetch(`/api/userInfo?name=${userName}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setUserInfo(data);
+        })
+        .catch((error) => console.error("API call error:", error));
+    }
+  }, [session]);
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
   };
-  console.log(data);
-  if (!data) {
+
+  if (!session) {
     router.push("/auth");
     return null;
   }
 
   return (
     <UserInfoContainer>
-      {data && (
+      {userInfo && (
         <UserInfo>
-          <header>こんにちは, {data.user?.name}さん</header>
+          <header>こんにちは, {userInfo?.name}さん</header>
           <button onClick={handleSignOut}>サインアウト</button>
         </UserInfo>
       )}
