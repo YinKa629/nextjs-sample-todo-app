@@ -9,26 +9,24 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Sign in",
       credentials: {
-        userName: { label: "ユーザ名", type: "text" },
+        userId: { label: "ユーザID", type: "text" },
         password: { label: "パスワード", type: "password" },
       },
       async authorize(credentials) {
         const user = {
-          id: "1",
-          name: "admin",
-          email: "jsmith@example.com",
-          role: "admin",
-          password: "xxxx",
+          id: "001",
+          name: "山田 花子",
+          email: "yamadaaa001@example.com",
+          password: "password",
+          address: "東京都千代田区",
           backendToken: "backEndAccessToken",
         };
         if (
-          credentials?.userName == user.name &&
+          credentials?.userId == user.id &&
           credentials.password == user.password
         ) {
-          console.log("認証成功");
           return user;
         } else {
-          console.log("認証失敗");
           return null;
         }
       },
@@ -39,11 +37,9 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
+    async session({ session }) {
+      console.log(session);
+      return session;
     },
   },
 };

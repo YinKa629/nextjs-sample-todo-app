@@ -1,14 +1,14 @@
 "use client";
 
-import { LoginButton } from "app/components/auth/AuthButton";
 import { NextPage } from "next";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type LoginFormValues = {
-  userName: string;
+  userId: string;
   password: string;
 };
 
@@ -18,9 +18,10 @@ const ErrorMessage = styled.div`
 `;
 
 const LoginPage: NextPage = ({}) => {
-  const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoginFailed, setLoginFailed] = useState<boolean>(false);
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -31,25 +32,28 @@ const LoginPage: NextPage = ({}) => {
     reValidateMode: "onSubmit",
   });
 
-  const handleChangeUserName = (e) => {
-    setUserName(e.target.value);
+  const handleChangeUserId = (e) => {
+    setLoginFailed(false);
+    setUserId(e.target.value);
   };
 
   const handleChangePassword = (e) => {
+    setLoginFailed(false);
     setPassword(e.target.value);
   };
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     const result = await signIn("credentials", {
-      userName: data.userName,
+      userId: data.userId,
       password: data.password,
-      callbackUrl: "/todo",
+      redirect: false,
     });
-    console.log(result);
 
     if (result?.error) {
       console.error("ログインエラー:", result.error);
       setLoginFailed(true);
+    } else {
+      router.push("/todo");
     }
   };
 
@@ -59,19 +63,17 @@ const LoginPage: NextPage = ({}) => {
       {isLoginFailed && <ErrorMessage>認証に失敗しました</ErrorMessage>}
 
       <div>
-        <label>ユーザー名</label>
+        <label>ユーザーID</label>
         <input
-          id="userName"
+          id="userId"
           type="text"
-          value={userName}
-          {...register("userName", {
-            required: { value: true, message: "ユーザ名は必須です" },
+          value={userId}
+          {...register("userId", {
+            required: { value: true, message: "ユーザIDは必須です" },
           })}
-          onChange={handleChangeUserName}
+          onChange={handleChangeUserId}
         />
-        {errors.userName && (
-          <ErrorMessage>{errors.userName?.message}</ErrorMessage>
-        )}
+        {errors.userId && <ErrorMessage>{errors.userId?.message}</ErrorMessage>}
 
         <label htmlFor="password">パスワード</label>
         <input
