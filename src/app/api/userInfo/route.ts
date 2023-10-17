@@ -9,7 +9,7 @@ export type UserInfoItem = {
   backendToken: string;
 };
 
-const UserInfo: UserInfoItem[] = [
+const userInfoItems: UserInfoItem[] = [
   {
     id: "001",
     name: "山田 花子",
@@ -22,15 +22,15 @@ const UserInfo: UserInfoItem[] = [
 
 export const GET = async (request: Request) => {
   const { searchParams } = new URL(request.url);
-  const userName = searchParams.get("name");
+  const userId = searchParams.get("id");
 
-  if (!userName) {
-    return NextResponse.error("User ID is required");
+  if (!userId) {
+    return NextResponse.error("UserId is required");
   }
 
-  const user = UserInfo.find((item) => item.name === userName);
+  const user = userInfoItems.find((item) => item.id === userId);
 
-  if (!userName) {
+  if (!user) {
     return NextResponse.error("User not found");
   }
 

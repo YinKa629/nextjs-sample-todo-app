@@ -13,21 +13,17 @@ export const authOptions: NextAuthOptions = {
         password: { label: "パスワード", type: "password" },
       },
       async authorize(credentials) {
-        const user = {
-          id: "001",
-          name: "山田 花子",
-          email: "yamadaaa001@example.com",
-          password: "password",
-          address: "東京都千代田区",
-          backendToken: "backEndAccessToken",
-        };
-        if (
-          credentials?.userId == user.id &&
-          credentials.password == user.password
-        ) {
-          return user;
-        } else {
-          return null;
+        try {
+          const url = `../../../api/userInfo?id=${credentials?.userId}`;
+          const response = await fetch(url);
+          const user = await response.json();
+          if (response.ok && user.password === credentials?.password) {
+            return user;
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.error(error);
         }
       },
     }),
@@ -38,7 +34,6 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async session({ session }) {
-      console.log(session);
       return session;
     },
   },

@@ -23,37 +23,39 @@ const UserInfo = styled.div`
 export const UserInfoHeader: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const [userInfo, setUserInfo] = useState<UserInfoItem>();
+  const [userInfo, setUserInfo] = useState<UserInfoItem | undefined>();
+  const [isAuthorized, setAuthorized] = useState<boolean | undefined>();
 
   useLayoutEffect(() => {
-    if (session && session.user) {
+    if (session?.user) {
       const userName = session.user.name;
-      fetch(`/api/userInfo?name=${userName}`)
+      fetch(`/api/userInfo?id=${userName}`)
         .then((res) => res.json())
         .then((data) => {
+          setAuthorized(true);
           setUserInfo(data);
         })
         .catch((error) => console.error("API call error:", error));
+    } else {
+      router.push("/auth");
+      setAuthorized(
+        false
+      ); /* リダイレクト先でヘッダー情報を表示させないための制御 */
     }
-  }, [session]);
+  }, [router, session]);
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
   };
 
-  if (!session) {
-    router.push("/auth");
-    return null;
-  }
-
   return (
-    <UserInfoContainer>
-      {userInfo && (
+    isAuthorized && (
+      <UserInfoContainer>
         <UserInfo>
           <header>こんにちは, {userInfo?.name}さん</header>
           <button onClick={handleSignOut}>サインアウト</button>
         </UserInfo>
-      )}
-    </UserInfoContainer>
+      </UserInfoContainer>
+    )
   );
 };
