@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const url = `../../../api/userInfo?id=${credentials?.userId}`;
+          const url = `http://localhost:3000/api/userInfo?id=${credentials?.userId}`;
           const response = await fetch(url);
           const user = await response.json();
           if (response.ok && user.password === credentials?.password) {
@@ -33,7 +33,17 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async session({ session }) {
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+
+    session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
       return session;
     },
   },

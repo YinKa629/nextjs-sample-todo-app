@@ -20,7 +20,7 @@ const ErrorMessage = styled.div`
 const LoginPage: NextPage = ({}) => {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoginFailed, setLoginFailed] = useState<boolean>(false);
+  const [isLoginFailed, setLoginFailed] = useState(false);
   const router = useRouter();
 
   const {

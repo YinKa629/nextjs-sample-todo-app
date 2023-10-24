@@ -27,9 +27,9 @@ export const UserInfoHeader: React.FC = () => {
   const [isAuthorized, setAuthorized] = useState<boolean | undefined>();
 
   useLayoutEffect(() => {
-    if (session?.user) {
-      const userName = session.user.name;
-      fetch(`/api/userInfo?id=${userName}`)
+    const userId = session?.user?.id;
+    if (userId) {
+      fetch(`/api/userInfo?id=${userId}`)
         .then((res) => res.json())
         .then((data) => {
           setAuthorized(true);
