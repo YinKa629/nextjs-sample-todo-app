@@ -9,3 +9,10 @@ export const WeatherCodes = [
   { id: "202", value: "曇時々雨" },
   { id: "214", value: "曇後雨" },
 ];
+
+const getWeatherValue = (code: string) => {
+  const weather = WeatherCodes.find((entry) => entry.id === code);
+  return weather ? weather.value : "-";
+};
+
+export default getWeatherValue;

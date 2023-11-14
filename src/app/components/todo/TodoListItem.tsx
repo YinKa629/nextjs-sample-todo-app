@@ -1,4 +1,4 @@
-import { TodoItem } from "app/todo/page";
+import { TodoItem } from "app/TodoList";
 
 // 質問：page側で行ったProps定義と同様のものをコンポーネント側でも定義すべきなのか
 interface TodoListItemProps {
