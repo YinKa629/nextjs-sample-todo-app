@@ -5,6 +5,7 @@ export type UserInfoItem = {
   name: string;
   email: string;
   password: string;
+  officeCode: string;
   address: string;
   backendToken: string;
 };
@@ -15,6 +16,7 @@ const userInfoItems: UserInfoItem[] = [
     name: "山田 花子",
     email: "yamadaaa001@example.com",
     password: "password",
+    officeCode: "130000",
     address: "東京都千代田区",
     backendToken: "backEndAccessToken",
   },
