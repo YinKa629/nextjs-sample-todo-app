@@ -30,7 +30,7 @@ export const UserInfoHeader: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [userInfo, setUserInfo] = useState<UserInfoItem | undefined>();
-  const [isAuthorized, setAuthorized] = useState<boolean | undefined>();
+  const [isAuthorized, setAuthorized] = useState(false);
   const [officeCode, setOfficeCode] = useState("");
 
   const [weather, setWeather] = useState("");
@@ -38,10 +38,8 @@ export const UserInfoHeader: React.FC = () => {
   useEffect(() => {
     if (!session) {
       router.push("/auth");
-      setAuthorized(false);
-    } else {
-      setAuthorized(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   useEffect(() => {
@@ -51,10 +49,13 @@ export const UserInfoHeader: React.FC = () => {
         .then((res) => res.json())
         .then((data) => {
           setUserInfo(data);
+          setAuthorized(true);
         })
         .catch((error) => {
           console.error("Failed to get user information:", error);
         });
+    } else {
+      setAuthorized(false);
     }
   }, [session?.user?.id]);
 
@@ -69,7 +70,6 @@ export const UserInfoHeader: React.FC = () => {
         .then((data) => {
           const weatherCode = data[0].timeSeries[0].areas[0].weatherCodes[0];
           setWeather(getWeatherValue(weatherCode));
-          setAuthorized(true);
         })
         .catch((error) =>
           console.error("Failed to get weather information::", error)
@@ -91,7 +91,7 @@ export const UserInfoHeader: React.FC = () => {
         <UserInfo>
           <header>こんにちは, {userInfo?.name}さん</header>
           <button onClick={handleSignOut}>サインアウト</button>
-          {officeCode && (
+          {weather && (
             <WeatherInfo onClick={handleWeatherInfoClick}>
               本日の天気は、{weather}
             </WeatherInfo>
