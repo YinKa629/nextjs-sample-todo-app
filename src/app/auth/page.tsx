@@ -53,7 +53,7 @@ const LoginPage: NextPage = ({}) => {
       console.error("ログインエラー:", result.error);
       setLoginFailed(true);
     } else {
-      router.push("/weather");
+      router.push("/todo");
     }
   };
 
