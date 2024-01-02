@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { UserInfoHeader } from "./components/common/UserInfoHeader";
 import { SessionProvider } from "next-auth/react";
+import { UserInfoProvider } from "context/UserInfoContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,10 @@ export default function RootLayout({
     <html lang="ja">
       <body className={inter.className}>
         <SessionProvider>
-          <UserInfoHeader />
-          {children}
+          <UserInfoProvider>
+            <UserInfoHeader />
+            {children}
+          </UserInfoProvider>
         </SessionProvider>
       </body>
     </html>

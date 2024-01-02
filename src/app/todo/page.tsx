@@ -8,6 +8,7 @@ import { NextPage } from "next";
 import { NewTodoItem } from "app/components/todo/NewTodoItem";
 import { TodoListTable } from "app/components/todo/TodoListTable";
 import { useSession } from "next-auth/react";
+import { UserInfoHeader } from "app/components/common/UserInfoHeader";
 
 export type TodoItem = {
   id: string;
